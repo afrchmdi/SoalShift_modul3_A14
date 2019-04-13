@@ -425,7 +425,11 @@ void to_do()
 
 ```
 
-thread digunakan untuk menambah WakeUp_Status, dan mengurangi Spirit_Status. dan delay ketika fitur menambah dan mengurangi status digunakan 3 kali.
+multi-thread digunakan untuk menambah WakeUp_Status, dan mengurangi Spirit_Status. dan delay ketika fitur menambah dan mengurangi status digunakan 3 kali.
+Apabila user memilih '2' maka fitur yang dijalankan adalah "Agmal Ayo Bangun" dimana akan dibuat thread dengan tid thread2 dan starting function WakeUp().
+Sedangkan apabila user menginputkan pilihan '3' maka fitur yang akan dijalankan adalah "Iraj Ayo Tidur" dimana akan dibuat thread dengan tid thread3 dan dengan starting function Sleep_pls().
+
+Ketika memilih fitur "Agmal Ayo Bangun" atau "Iraj Ayo Tidur", akan dilakukan counting berapa kali fitur telah digunakan. Masing-masing fitur memiliki counter yang akan diincrement 1 tiap kali user memilih fitur untuk dijalankan. Pada fitur "Agmal Ayo Bangun" counternya disimpan pada variabel global countwake, dan pada fitur "Iraj Ayo Tidur" counternya disimpan pada variabel global countgn.
 
 ```sh
 while (1){
@@ -463,7 +467,8 @@ while (1){
   }
 ```
 
-fungsi WakeUp() untuk menambah status WakeUp
+fungsi WakeUp() untuk menambah status WakeUp sebanyak 15 yang merupakan starting function dari thread dengan tid thread2.
+Apabila countwake == 3 maka akan ditampilkan pesan "Fitur Iraj Ayo Tidur disabled 10 s" dan dibuat thread dengan tid thread1 dengan starting function delay().
 ```sh
 void *WakeUp()
 {
@@ -481,7 +486,7 @@ void *WakeUp()
       flag = 0;
 }
 ```
-fungsi Sleep_pls() untuk mengurangi Spirit_Status
+fungsi Sleep_pls() untuk mengurangi Spirit_Status sebanyak 20 dan fungsi ini merupakan starting function dari thread dengan tid thread3. Apabila countgn == 3 maka akan ditampilkan pesan "Agmal Ayo Bangun disabled 10 s" dan dibuat thread dengan tid  thread1 dengan starting function delay().
 ```sh
 void *Sleep_pls()
 {
@@ -499,7 +504,7 @@ void *Sleep_pls()
     flag = 0;
 }
 ```
-fungsi check() untuk mengecek apakah status Agmal dan Iraj memenuhi syarat exit program
+fungsi check() untuk mengecek apakah status Agmal dan Iraj memenuhi syarat exit program, yaitu apabila WakeUp_Status >= 100 atau ketika Spirit_Status <= 0.
 ```sh
 int check(){
 
@@ -516,6 +521,10 @@ int check(){
 }
 ```
 fungsi delay() untuk men-disable komplemen fitur yang digunakan 3 kali.
+fungsi ini akan dipanggil sebagai start function thread yang dibuat ketika countgn atau countwake = 3 yang berarti fitur telah dijalankan sebanyak 3 kali.
+Dalam fungsi ini dilakukan looping selama 10 s dimana selama loopingan tersebut berjalan, counter yang bernilai 3 akan diberi flag. Jika countgn yang memiliki nilai 3, maka flag2 = 1. Jika countwake yang memiliki nilai 3, maka flag3 =1.
+Pemberian flag2 dan flag3 ini yang akan berefek pada fungsi main() dimana pilihan tidak akan berjalan ketika flag ini bernilai 1.
+
 ```sh
 void *delay()
 {
